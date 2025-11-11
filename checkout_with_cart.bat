@@ -1,0 +1,45 @@
+@echo off
+echo ========================================
+echo    Checkout مع السلة - Eat to Eat
+echo ========================================
+echo.
+
+cd backend
+
+echo Step 1: Creating storage link...
+php artisan storage:link
+
+echo.
+echo Step 2: Starting server...
+echo Server will start on http://localhost:8000
+echo.
+echo ✓ CHECKOUT WITH CART INTEGRATION!
+echo ✓ Real cart data from localStorage!
+echo ✓ Product images display!
+echo ✓ Real price calculations!
+echo ✓ Cart validation!
+echo ✓ Order creation simulation!
+echo.
+echo To test:
+echo 1. Go to http://localhost:3000/restaurants
+echo 2. Add products to cart
+echo 3. Go to http://localhost:3000/checkout
+echo 4. See real products and prices
+echo 5. Fill form and submit
+echo 6. Cart will be cleared after order
+echo.
+echo Features:
+echo - Real cart integration
+echo - Product images in checkout
+echo - Real price calculations
+echo - Delivery fee from restaurant
+echo - Tax calculation (10%)
+echo - Cart validation
+echo - Order creation simulation
+echo - Cart clearing after order
+echo - Back to cart button
+echo.
+echo Note: This version integrates with real cart data
+echo Make sure to add products to cart first!
+echo.
+php artisan serve --host=127.0.0.1 --port=8000

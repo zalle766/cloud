@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Eat to Eat - Test</title>
+    <style>
+        body {
+            font-family: 'Cairo', Arial, sans-serif;
+            background: linear-gradient(135deg, #f97316, #0ea5e9);
+            margin: 0;
+            padding: 20px;
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        .container {
+            background: white;
+            padding: 40px;
+            border-radius: 20px;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.1);
+            text-align: center;
+            max-width: 500px;
+        }
+        h1 {
+            color: #f97316;
+            margin-bottom: 20px;
+            font-size: 2.5rem;
+        }
+        p {
+            color: #666;
+            font-size: 1.2rem;
+            margin-bottom: 30px;
+        }
+        .btn {
+            background: #f97316;
+            color: white;
+            padding: 15px 30px;
+            border: none;
+            border-radius: 10px;
+            font-size: 1.1rem;
+            cursor: pointer;
+            text-decoration: none;
+            display: inline-block;
+            transition: all 0.3s;
+        }
+        .btn:hover {
+            background: #ea580c;
+            transform: translateY(-2px);
+        }
+        .status {
+            margin-top: 20px;
+            padding: 15px;
+            background: #f0f9ff;
+            border-radius: 10px;
+            border-left: 4px solid #0ea5e9;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🍽️ Eat to Eat</h1>
+        <p>تطبيق توصيل الطعام الأسرع والأكثر موثوقية</p>
+        
+        <div class="status">
+            <strong>حالة التطبيق:</strong> يعمل بشكل طبيعي ✅
+        </div>
+        
+        <a href="http://localhost:3000" class="btn">انتقل للتطبيق الرئيسي</a>
+        
+        <div style="margin-top: 30px; font-size: 0.9rem; color: #888;">
+            <p>إذا كنت ترى هذه الصفحة، فالتطبيق يعمل بشكل صحيح.</p>
+            <p>إذا كانت الصفحة الرئيسية فارغة، تحقق من:</p>
+            <ul style="text-align: right; margin-top: 10px;">
+                <li>تشغيل خادم التطوير: <code>npm run dev</code></li>
+                <li>فتح أدوات المطور في المتصفح (F12)</li>
+                <li>التحقق من وجود أخطاء في Console</li>
+            </ul>
+        </div>
+    </div>
+</body>
+</html>

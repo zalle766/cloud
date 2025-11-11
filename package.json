@@ -1,0 +1,22 @@
+{
+  "name": "eattoeat",
+  "version": "1.0.0",
+  "description": "Eat to Eat - Food Delivery App",
+  "scripts": {
+    "dev": "cd frontend && npm run dev",
+    "dev:frontend": "cd frontend && npm run dev",
+    "build": "cd frontend && npm run build",
+    "install:frontend": "cd frontend && npm install",
+    "setup": "npm run install:frontend && npm run setup:frontend",
+    "setup:frontend": "cd frontend && cp .env.example .env",
+    "test": "cd frontend && npm test"
+  },
+  "keywords": [
+    "food-delivery",
+    "react",
+    "supabase",
+    "javascript"
+  ],
+  "author": "Eat to Eat Team",
+  "license": "MIT"
+}

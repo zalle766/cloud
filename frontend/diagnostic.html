@@ -1,0 +1,314 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Eat to Eat - تشخيص المشاكل</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 20px;
+            background-color: #f9fafb;
+            direction: rtl;
+        }
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+        .header {
+            background-color: #f97316;
+            color: white;
+            padding: 20px;
+            text-align: center;
+            border-radius: 8px;
+            margin-bottom: 20px;
+        }
+        .status-card {
+            background-color: white;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+            margin-bottom: 15px;
+        }
+        .status-success {
+            border-left: 4px solid #10b981;
+        }
+        .status-error {
+            border-left: 4px solid #ef4444;
+        }
+        .status-warning {
+            border-left: 4px solid #f59e0b;
+        }
+        .btn {
+            background-color: #f97316;
+            color: white;
+            padding: 10px 20px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 16px;
+            margin: 5px;
+        }
+        .btn:hover {
+            background-color: #ea580c;
+        }
+        .btn-success {
+            background-color: #10b981;
+        }
+        .btn-success:hover {
+            background-color: #059669;
+        }
+        .btn-error {
+            background-color: #ef4444;
+        }
+        .btn-error:hover {
+            background-color: #dc2626;
+        }
+        .log-area {
+            background-color: #1f2937;
+            color: #f9fafb;
+            padding: 15px;
+            border-radius: 8px;
+            font-family: monospace;
+            font-size: 12px;
+            max-height: 300px;
+            overflow-y: auto;
+            margin-top: 10px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>Eat to Eat - تشخيص المشاكل</h1>
+            <p>أداة تشخيص شاملة لفحص حالة التطبيق والخادم</p>
+        </div>
+
+        <div class="status-card">
+            <h3>حالة الخوادم</h3>
+            <div id="server-status">
+                <p>جاري فحص الخوادم...</p>
+            </div>
+            <button class="btn" onclick="checkServers()">فحص الخوادم</button>
+        </div>
+
+        <div class="status-card">
+            <h3>حالة API</h3>
+            <div id="api-status">
+                <p>جاري فحص API...</p>
+            </div>
+            <button class="btn" onclick="checkAPI()">فحص API</button>
+        </div>
+
+        <div class="status-card">
+            <h3>حالة قاعدة البيانات</h3>
+            <div id="database-status">
+                <p>جاري فحص قاعدة البيانات...</p>
+            </div>
+            <button class="btn" onclick="checkDatabase()">فحص قاعدة البيانات</button>
+        </div>
+
+        <div class="status-card">
+            <h3>سجل الأخطاء</h3>
+            <div id="error-log" class="log-area">
+                <div>سجل الأخطاء سيظهر هنا...</div>
+            </div>
+            <button class="btn" onclick="clearLog()">مسح السجل</button>
+            <button class="btn" onclick="exportLog()">تصدير السجل</button>
+        </div>
+
+        <div class="status-card">
+            <h3>إجراءات الإصلاح</h3>
+            <button class="btn btn-success" onclick="restartServers()">إعادة تشغيل الخوادم</button>
+            <button class="btn btn-warning" onclick="clearCache()">مسح الذاكرة المؤقتة</button>
+            <button class="btn btn-error" onclick="resetApplication()">إعادة تعيين التطبيق</button>
+        </div>
+    </div>
+
+    <script>
+        let errorLog = [];
+
+        function log(message, type = 'info') {
+            const timestamp = new Date().toLocaleString('ar-SA');
+            const logEntry = `[${timestamp}] ${type.toUpperCase()}: ${message}`;
+            errorLog.push(logEntry);
+            
+            const logArea = document.getElementById('error-log');
+            logArea.innerHTML += `<div>${logEntry}</div>`;
+            logArea.scrollTop = logArea.scrollHeight;
+        }
+
+        function clearLog() {
+            errorLog = [];
+            document.getElementById('error-log').innerHTML = '<div>تم مسح السجل</div>';
+        }
+
+        function exportLog() {
+            const logText = errorLog.join('\n');
+            const blob = new Blob([logText], { type: 'text/plain' });
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = `eattoeat-log-${new Date().toISOString().split('T')[0]}.txt`;
+            a.click();
+            URL.revokeObjectURL(url);
+        }
+
+        async function checkServers() {
+            log('بدء فحص الخوادم...', 'info');
+            
+            const statusDiv = document.getElementById('server-status');
+            statusDiv.innerHTML = '<p>جاري فحص الخوادم...</p>';
+
+            try {
+                // فحص الخادم الأمامي
+                const frontendResponse = await fetch('http://localhost:3000', { 
+                    method: 'HEAD',
+                    mode: 'no-cors'
+                });
+                
+                // فحص الخادم الخلفي
+                const backendResponse = await fetch('http://localhost:8000/api/restaurants', {
+                    method: 'HEAD'
+                });
+
+                statusDiv.innerHTML = `
+                    <div class="status-success">
+                        <h4>✅ الخوادم تعمل بشكل طبيعي</h4>
+                        <p>الخادم الأمامي: localhost:3000 - متاح</p>
+                        <p>الخادم الخلفي: localhost:8000 - متاح</p>
+                    </div>
+                `;
+                log('الخوادم تعمل بشكل طبيعي', 'success');
+
+            } catch (error) {
+                statusDiv.innerHTML = `
+                    <div class="status-error">
+                        <h4>❌ مشكلة في الخوادم</h4>
+                        <p>خطأ: ${error.message}</p>
+                        <p>تأكد من تشغيل الخوادم</p>
+                    </div>
+                `;
+                log(`خطأ في الخوادم: ${error.message}`, 'error');
+            }
+        }
+
+        async function checkAPI() {
+            log('بدء فحص API...', 'info');
+            
+            const statusDiv = document.getElementById('api-status');
+            statusDiv.innerHTML = '<p>جاري فحص API...</p>';
+
+            try {
+                const response = await fetch('http://localhost:8000/api/restaurants');
+                
+                if (response.ok) {
+                    const data = await response.json();
+                    statusDiv.innerHTML = `
+                        <div class="status-success">
+                            <h4>✅ API يعمل بشكل طبيعي</h4>
+                            <p>حالة الاستجابة: ${response.status}</p>
+                            <p>عدد المطاعم: ${data.data?.data?.length || 0}</p>
+                        </div>
+                    `;
+                    log('API يعمل بشكل طبيعي', 'success');
+                } else {
+                    throw new Error(`HTTP ${response.status}: ${response.statusText}`);
+                }
+
+            } catch (error) {
+                statusDiv.innerHTML = `
+                    <div class="status-error">
+                        <h4>❌ مشكلة في API</h4>
+                        <p>خطأ: ${error.message}</p>
+                        <p>تأكد من تشغيل الخادم الخلفي</p>
+                    </div>
+                `;
+                log(`خطأ في API: ${error.message}`, 'error');
+            }
+        }
+
+        async function checkDatabase() {
+            log('بدء فحص قاعدة البيانات...', 'info');
+            
+            const statusDiv = document.getElementById('database-status');
+            statusDiv.innerHTML = '<p>جاري فحص قاعدة البيانات...</p>';
+
+            try {
+                const response = await fetch('http://localhost:8000/api/restaurants');
+                
+                if (response.ok) {
+                    const data = await response.json();
+                    
+                    if (data.success && data.data) {
+                        statusDiv.innerHTML = `
+                            <div class="status-success">
+                                <h4>✅ قاعدة البيانات تعمل بشكل طبيعي</h4>
+                                <p>عدد المطاعم: ${data.data.data.length}</p>
+                                <p>حالة الاتصال: متصل</p>
+                            </div>
+                        `;
+                        log('قاعدة البيانات تعمل بشكل طبيعي', 'success');
+                    } else {
+                        throw new Error('تنسيق البيانات غير صحيح');
+                    }
+                } else {
+                    throw new Error(`HTTP ${response.status}: ${response.statusText}`);
+                }
+
+            } catch (error) {
+                statusDiv.innerHTML = `
+                    <div class="status-error">
+                        <h4>❌ مشكلة في قاعدة البيانات</h4>
+                        <p>خطأ: ${error.message}</p>
+                        <p>تأكد من تشغيل قاعدة البيانات</p>
+                    </div>
+                `;
+                log(`خطأ في قاعدة البيانات: ${error.message}`, 'error');
+            }
+        }
+
+        function restartServers() {
+            log('محاولة إعادة تشغيل الخوادم...', 'info');
+            alert('يرجى إعادة تشغيل الخوادم يدوياً:\n\n1. أوقف الخوادم الحالية\n2. شغل الخادم الخلفي: cd backend && php artisan serve\n3. شغل الخادم الأمامي: cd frontend && npm run dev');
+        }
+
+        function clearCache() {
+            log('مسح الذاكرة المؤقتة...', 'info');
+            localStorage.clear();
+            sessionStorage.clear();
+            alert('تم مسح الذاكرة المؤقتة بنجاح');
+            log('تم مسح الذاكرة المؤقتة', 'success');
+        }
+
+        function resetApplication() {
+            if (confirm('هل أنت متأكد من إعادة تعيين التطبيق؟ سيتم مسح جميع البيانات المحلية.')) {
+                log('إعادة تعيين التطبيق...', 'warning');
+                localStorage.clear();
+                sessionStorage.clear();
+                window.location.reload();
+            }
+        }
+
+        // بدء الفحص التلقائي عند تحميل الصفحة
+        window.addEventListener('load', () => {
+            log('تم تحميل صفحة التشخيص', 'info');
+            setTimeout(() => {
+                checkServers();
+                setTimeout(() => checkAPI(), 1000);
+                setTimeout(() => checkDatabase(), 2000);
+            }, 1000);
+        });
+
+        // اعتراض الأخطاء العامة
+        window.addEventListener('error', (event) => {
+            log(`خطأ عام: ${event.error?.message || event.message}`, 'error');
+        });
+
+        window.addEventListener('unhandledrejection', (event) => {
+            log(`خطأ غير معالج: ${event.reason}`, 'error');
+        });
+    </script>
+</body>
+</html>
